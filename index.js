@@ -29,22 +29,26 @@ class Type {
 
 	exec(...arg) {
 		return new Promise((resolve, reject) => {
-			const cmd = spawn(...arg);
-			let data = [];
-			cmd.stdout.on('data', (d) => data.push(d));
-			cmd.stderr.on('data', (d) => {});
-			cmd.on('error', (e) => {
+			try {
+				const cmd = spawn(...arg);
+				let data = [];
+				cmd.stdout.on('data', (d) => data.push(d));
+				cmd.stderr.on('data', (d) => {});
+				cmd.on('error', (e) => {
+					reject(e);
+				});
+				cmd.on('close', () => {
+					resolve(Buffer.concat(data).toString().trim());
+				});
+			} catch(e) {
 				reject(e);
-			});
-			cmd.on('close', () => {
-				resolve(Buffer.concat(data).toString().trim());
-			});
+			}
 		});
 	}
 
 	getType() {
 		return this.exec('mimetype', ['-b', this.file]).catch(() => {
-			this.exec('file', ['-b', '--mime-type', this.file]);
+			return this.exec('file', ['-b', '--mime-type', this.file]);
 		});
 	}
 
@@ -63,9 +67,9 @@ class Type {
 					return this.lookup();
 				}
 				return res;
-			}).catch(() => this.lookup());
-		}).then((res) => {
-			return res || this.default;
+			}).catch(() => this.lookup()).then((res) => {
+				return res || this.default;
+			});
 		});
 	}
 
