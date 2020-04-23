@@ -71,6 +71,9 @@ class Type {
 
 }
 
-module.exports = (file, pad) => {
+const get = (file, pad) => {
 	return new Type(file, pad).get();
 };
+
+module.exports = get;
+module.exports.default = get;
