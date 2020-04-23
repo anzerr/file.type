@@ -28,13 +28,13 @@ class Type {
 	}
 
 	exec(...arg) {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const cmd = spawn(...arg);
 			let data = [];
 			cmd.stdout.on('data', (d) => data.push(d));
 			cmd.stderr.on('data', (d) => {});
 			cmd.on('error', (e) => {
-				throw e;
+				reject(e);
 			});
 			cmd.on('close', () => {
 				resolve(Buffer.concat(data).toString().trim());

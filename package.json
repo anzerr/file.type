@@ -15,7 +15,7 @@
 	"main": "index.js",
 	"types": "index.d.ts",
 	"scripts": {
-		"test": "echo 'todo'"
+		"test": "node test.js"
 	},
 	"eslintConfig": {
 		"extends": "eslint-config-basic"
