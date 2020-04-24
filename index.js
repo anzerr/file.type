@@ -3,7 +3,8 @@ const {spawn} = require('child_process'),
 	mime = require('mime.util'),
 	is = require('type.util'),
 	path = require('path'),
-	fs = require('fs.promisify');
+	fs = require('fs.promisify'),
+	map = require('./src/map');
 
 class Type {
 
@@ -53,22 +54,23 @@ class Type {
 	}
 
 	lookup() {
-		const c = path.parse(`${this.file}${this.pad || ''}`);
-		if (c.ext) {
-			return mime.lookup(c.ext);
+		const {ext} = path.parse(`${this.file}${this.pad || ''}`);
+		if (ext) {
+			return mime.lookup(ext);
 		}
-		return this.default;
+		return null;
 	}
 
 	get() {
 		return this.isValid().then(() => {
 			return this.getType().then((res) => {
-				if (res === this.default) {
-					return this.lookup();
+				if (map.blacklist.includes(res)) {
+					return this.lookup() || res;
 				}
 				return res;
 			}).catch(() => this.lookup()).then((res) => {
-				return res || this.default;
+				const out = res || this.default;
+				return map.ref[out] || out;
 			});
 		});
 	}

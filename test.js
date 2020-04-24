@@ -10,10 +10,7 @@ Promise.all([
 		assert.equal(res, 'application/json');
 	}),
 	fileType('./README.md').then((res) => {
-		assert.equal(res, 'text/markdown');
-	}),
-	fileType('./index.d.ts').then((res) => {
-		assert.equal(res, 'text/vnd.trolltech.linguist');
+		assert.equal(['text/x-markdown', 'text/markdown'].includes(res), true);
 	})
 ]).catch((err) => {
 	console.log(err);
