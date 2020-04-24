@@ -64,7 +64,7 @@ class Type {
 	get() {
 		return this.isValid().then(() => {
 			return this.getType().then((res) => {
-				if (map.blacklist.includes(res)) {
+				if (map.blacklist.includes(res) || res.match(this.default)) {
 					return this.lookup() || res;
 				}
 				return res;
