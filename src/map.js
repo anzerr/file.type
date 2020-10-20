@@ -5,6 +5,7 @@ module.exports = {
 	},
 	blacklist: [
 		'text/x-c++',
-		'text/plain'
+		'text/plain',
+		'application/octet-stream'
 	]
 };
